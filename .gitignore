@@ -2,3 +2,5 @@ input.txt
 project.tab.c
 project.tab.h
 temp1.exe
+lex.yy.c
+
