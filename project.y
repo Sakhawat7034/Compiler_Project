@@ -4,11 +4,11 @@
     #include<string.h>
     #include<math.h>
 
-    #define convt 180
+    #define convt 180.0
     #define py  3.1416
 
     int ptr = 0;
-    int value[1000];
+    float value[1000];
     char varlist[1000][1000];
 
     ///if already declared  return 1 else return 0
@@ -20,7 +20,7 @@
         return 0;
     }
     /// if already declared return 0 or add new value and return 1;
-    int addnewval(char str[],int val){
+    int addnewval(char str[],float val){
         if(isdeclared(str) == 1) return 0;
         strcpy(varlist[ptr],str);
         value[ptr] = val;
@@ -29,7 +29,7 @@
     }
 
     ///get the value of corresponding string
-    int getval(char str[]){
+   float getval(char str[]){
         int indx = -1;
         int i;
         for(i = 0; i < ptr; i++){
@@ -40,7 +40,7 @@
         }
         return value[indx];
     }
-    int setval(char str[], int val){
+    int setval(char str[], float val){
     	int indx = -1;
         int i;
         for(i = 0; i < ptr; i++){
@@ -56,7 +56,7 @@
 
 %union {
   char text[1000];
-  int val;
+  float val;
 }
 
 %type <val> expression
@@ -104,7 +104,7 @@ variable   	: VARIABLE
 					}
 			| VARIABLE ASSIGN expression 	
 					{
-						//printf("%s %d\n",$1,$3);
+						//printf("%s %f\n",$1,$3);
 						int x = addnewval($1,$3);
 						if(!x) {
 							printf("Compilation Error: Variable %s is already declared\n",$1);
@@ -191,12 +191,21 @@ print		: 	PRINT LEFT_PARENTHESIS VARIABLE RIGHT_PARENTHESIS
 							exit(-1);
 						}
 						else{
-							int v = getval($3);
-							printf("%d",v);
+							float v = getval($3);
+							printf("%f",v);
 						}
 					};
 ifelse: ;
-assign: ;
+assign:VARIABLE ASSIGN expression SEMI
+					{
+						if(!isdeclared($1)) {
+							printf("Compilation Error: Variable %s is not declared\n",$1);
+							exit(-1);
+						}
+						else{
+							setval($1,$3);
+						}
+					} ;
 whilestmt : ;
 forloopstmt: ;
 
