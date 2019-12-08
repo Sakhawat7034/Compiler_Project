@@ -7,6 +7,10 @@
     #define convt 180.0
     #define py  3.1416
 
+     int ifval[1000];
+	int ifptr = -1;
+	int ifdone[1000];
+
     int ptr = 0;
     float value[1000];
     char varlist[1000][1000];
@@ -64,7 +68,7 @@
 %token <val>  NUMBER
 %token <text>  VARIABLE
 
-%token  HEADER INT FLOAT CHAR INTMAIN VOIDMAIN IF ELSE ELSEIF WHILE FOR SWITCH CASE DEFAULT COLON COL LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_BRAC RIGHT_BRAC SEMI COMMA PLUS MINUS MULT DIV ASSIGN EQUAL LESS GREATER GE LE NE POWER SIN COS TAN LOG FACTORIAL SQRT SQR CUBE DOUBLE PRINT
+%token  HEADER ABS ABF INT FLOAT CHAR INTMAIN VOIDMAIN IF ELSE ELSEIF WHILE FOR SWITCH CASE DEFAULT COLON COL LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_BRAC RIGHT_BRAC SEMI COMMA PLUS MINUS MULT DIV ASSIGN EQUAL LESS GREATER GE LE NE POWER SIN COS TAN LOG FACTORIAL SQRT SQR CUBE DOUBLE PRINT
 RET FUNCTION  
 
 %%
@@ -195,7 +199,38 @@ print		: 	PRINT LEFT_PARENTHESIS VARIABLE RIGHT_PARENTHESIS
 							printf("%f",v);
 						}
 					};
-ifelse: ;
+			
+ifelse      : IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS ABS statement ABF  {
+                    //printf("came here ifelse %d\n",$3);
+                    
+                    if(ifptr<0){
+                        printf("1ok negetive");
+                        ifptr=0;
+                    }
+                    ifdone[ifptr] = 0;
+                    ifptr --;
+                } elseif 
+            ;
+elseif : /* empty */
+        | ELSEIF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS ABS statement ABF
+            {
+                printf("ELSE IF :: %d\n",$3);
+            } elseif
+        | elseif ELSE ABS statement ABF 
+            {
+                //printf("Came ELSE\n");
+                
+                if(ifptr<0){
+                    printf("4ok negetive");
+                    ifptr=0;
+                }
+                if(ifdone[ifptr] == 0) 
+                {
+                    printf("\n ELSE Executed\n");
+                    ifdone[ifptr] = 1;
+                }
+            }
+        ;
 assign:VARIABLE ASSIGN expression SEMI
 					{
 						if(!isdeclared($1)) {

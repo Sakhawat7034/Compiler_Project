@@ -43,12 +43,14 @@ header   hash[' ']LT[' ']stdio.h[' ']GT
 "RB"          {return RIGHT_BRAC;}
 "LP"          {return LEFT_PARENTHESIS;}
 "RP"          {return RIGHT_PARENTHESIS;}
+"ABS"		  {return ABS;}
+"ABF"         {return ABF;}
 "sm"          {return SEMI;}
 "cm"          {return COMMA;}
-[+][~]          {return PLUS;}
-[-][~]          {return MINUS;}
-[*][~]          {return MULT;}
-[/][~]          {return DIV;}
+jog          {return PLUS;}
+biyog          {return MINUS;}
+gon          {return MULT;}
+vag          {return DIV;}
 [<][-]          {return ASSIGN;}
 [=]             { return *yytext; }
 "equal"          {return EQUAL;}
