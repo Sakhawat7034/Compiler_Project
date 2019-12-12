@@ -16,60 +16,46 @@ header   hash[' ']LT[' ']stdio.h[' ']GT
 
 %%
 
-"INT"	{ return INT; }
-"FLOAT"	{ return FLOAT; }
-"CHAR"	{ return CHAR; }
-"DOUBLE" { return DOUBLE; }
-
-
-
-
-"INT MAIN"	    { return INTMAIN; }
-"VOID MAIN"	    { return VOIDMAIN; }
-"IF"		    { return IF; }
-"ELSE"		    { return ELSE; }
-"ELSEIF"        { return ELSEIF; }
-"WHILE"         {return WHILE;} 
-"FORLOOP"       {return FOR;}
-"SWITCH "       { return SWITCH; }
-"CASE"          { return CASE; }
-"DEFAULT"      { return DEFAULT; }
-"COLON"        {return COLON;}
+"var"         { return VAR;}
+"INT MAIN"	  { return INTMAIN; }
+"IF"		  { return IF; }
+"ELSE"		  { return ELSE; }
+"ELSEIF"      { return ELSEIF; }
+"WHILE"       {return WHILE;} 
+"GHORO"       {return FOR;}
+"SWITCH"      { return SWITCH; }
+"CASE"        { return CASE; }
+"DEFAULT"     { return DEFAULT; }
 ":"           { return COL;}
-"FUNCTION"    {return FUNCTION;}
-"RET"         {return RET;}
-[+]           { return *yytext; }
 "LB"          {return LEFT_BRAC;}
 "RB"          {return RIGHT_BRAC;}
 "LP"          {return LEFT_PARENTHESIS;}
 "RP"          {return RIGHT_PARENTHESIS;}
-"ABS"		  {return ABS;}
-"ABF"         {return ABF;}
 "sm"          {return SEMI;}
 "cm"          {return COMMA;}
-jog          {return PLUS;}
-biyog          {return MINUS;}
-gon          {return MULT;}
-vag          {return DIV;}
-[<][-]          {return ASSIGN;}
-[=]             { return *yytext; }
-"equal"          {return EQUAL;}
-"LT"            {return LESS;}
-"GT"            {return GREATER;}
-"GTE"           {return GE; }
-"LTE"           {return LE; }
-"NE"            {return NE; }
-"POW"           {return POWER; }
+jog           {return PLUS;}
+biyog         {return MINUS;}
+gon           {return MULT;}
+vag           {return DIV;}
+[<][-]        {return ASSIGN;}
+"LT"          {return LESS;}
+"GT"          {return GREATER;}
+"GTE"         {return GE; }
+"LTE"         {return LE; }
+"NE"          {return NE; }
+"="           { return EQUAL;}
+"POW"         {return POWER; }
 "SIN"         { return SIN; }
 "COS"         { return COS; }
 "TAN"         { return TAN; }
 "LOG"         { return LOG; }
 "FACT"        { return FACTORIAL; }
-"SQRT"          { return SQRT; }
-"SQR"           { return SQR; }
-"CUBE"          { return CUBE; }
-{header}        { return HEADER;}
-"PRINT"         { return PRINT;}
+"SQRT"        { return SQRT; }
+"SQR"         { return SQR; }
+"CUBE"        { return CUBE; }
+{header}      { return HEADER;}
+"PRINT"       { return PRINT;}
+"\""(.)*"\""  {strcpy(yylval.text,yytext);return STR;}
 
 [ \t\n]* ;
 
@@ -83,9 +69,10 @@ vag          {return DIV;}
 }
 {char}+({char}|{digit}|{special})*  {
 	strcpy(yylval.text,yytext);
-	return VARIABLE;
+	return VARIABLE; 
 }
-
+"#".*("\n")  {}
+"#*".*"\n"(.*"\n")*(.*"*#") {}
 .          { yyerror("Unknown charecter\n"); }
 
 %%
@@ -94,6 +81,7 @@ vag          {return DIV;}
 int main()
 {
 	yyin = freopen("input.txt","r",stdin);
+	yyout=freopen("out.txt","w",stdout);
 	
 	yyparse();
 

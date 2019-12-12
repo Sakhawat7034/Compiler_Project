@@ -211,34 +211,28 @@ expression  :NUM {$$=$1;}
             ;
 
 ifelse      : IF PB expression PE BB statement BE  {
-                    //printf("came here ifelse %d\n",$3);
-                    
-                    /*if(ifptr<0){
-                        printf("1ok negetive");
-                        ifptr=0;
-                    }
-                    ifdone[ifptr] = 0;
-                    ifptr --;*/
+                   ifptr++;
+						ifdone[ifptr] = 0;
+						if($1){
+							printf("\nIf executed\n");
+							ifdone[ifptr] = 1;
+						}
                 } elseif 
             ;
 elseif : /* empty */
         | ELSEIF PB expression PE BB statement BE
             {
-                printf("ELSE IF :: %d\n",$3);
+                if($4 && ifdone[ifptr] == 0){
+							printf("\nElse if block expressin %d executed\n",$4);
+							ifdone[ifptr] = 1;
+						}
             } elseif
         | elseif ELSE BB statement BE 
             {
-                //printf("Came ELSE\n");
-                /*
-                if(ifptr<0){
-                    printf("4ok negetive");
-                    ifptr=0;
-                }
-                if(ifdone[ifptr] == 0) 
-                {
-                    printf("\n ELSE Executed\n");
-                    ifdone[ifptr] = 1;
-                }*/
+              if(ifdone[ifptr] == 0){
+							printf("\nElse block executed\n");
+							ifdone[ifptr] = 1;
+						}
             }
         ;
 
@@ -276,3 +270,69 @@ int yyerror(char *s){
     fflush(stdout);
 	printf("\n%*s\n%*s\n", column, "^", column, s);
 }
+
+if_stat : 
+         IF' 'exp1'{'if_stat'}'else_if {if($3)
+                                           {
+                                           $$=$5;
+                                           }
+                                           else {
+                                           $$=$7;
+                                           }
+                                           }
+
+        | IF' 'exp1'{'if_stat'}'        { if($3) {$$=$5;}}
+
+        | exp1
+
+        ;
+
+
+
+else_if :
+          ELIF' 'exp1'{'if_stat'}'else_if{
+                                          if($3)
+                                          {
+                                            $$=$5;
+                                          }
+                                          else
+
+                                          {
+                                          $$=$7;
+                                          }
+
+                                          }
+
+
+
+        | ELSE' ''{'if_stat'}'           {$$=$4;}
+
+        
+
+        | ELIF' 'exp1'{'if_stat'}'  {  if($3) {$$=$5;}
+                                      }
+
+
+        ;
+        	|IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS LEFT_BRAC expression RIGHT_BRAC %prec IFX {
+								if($3)
+								{
+									printf("\nvalue of expression in IF: %d\n",(int)($6));
+								}
+								else
+								{
+									printf("\ncondition value zero in IF block\n");
+								}
+							}
+
+	| IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS LEFT_BRAC expression  RIGHT_BRAC ELSE LEFT_BRAC expression RIGHT_BRAC %prec ELSEX {
+								 	if($3)
+									{
+										printf("value of expression in IF: %d\n",(int)$6);
+									}
+									else
+									{
+										printf("value of expression in ELSE: %d\n",(int)$10);
+									}
+								   }
+								;
